@@ -1,4 +1,11 @@
-# Express Security And Roles
+# Express Security And Roles | IronStore
+
+## Goal
+
+The goal of this project is to create a website where:
+- people can add tee-shirts
+- admin can validate tee-shirts
+- people can see all validated tee-shirts to buy
 
 ## Steps to reproduce to start
 
@@ -8,16 +15,20 @@ cd express-security-and-roles
 code .
 ```
 
-Create `models/Room.js` 
-```js
-// models/Room.js
+Create `models/TeeShirt.js` 
+```javascript
+// models/TeeShirt.js
 const mongoose = require('mongoose')
 const Schema   = mongoose.Schema
 
 const roomSchema = new Schema({
-  name:  String,
-  description:  String,
-  isPublished: { 
+  name: String,
+  pictureUrl: String,
+  price: { 
+    type: Number,
+    min: 0
+  },
+  isValidated: { 
     type: Boolean,
     default: false,
   },
@@ -27,8 +38,8 @@ const roomSchema = new Schema({
   }
 })
 
-const Room = mongoose.model('Room', roomSchema)
-module.exports = Room
+const TeeShirt = mongoose.model('TeeShirt', roomSchema)
+module.exports = TeeShirt
 ```
 
 Change the navbar of `views/layout.hbs` 
@@ -82,7 +93,7 @@ Update `routes/index.js`
 ```javascript
 const express = require('express')
 const router  = express.Router()
-const Room = require('../models/Room')
+const TeeShirt = require('../models/TeeShirt')
 
 // Home page
 router.get('/', (req, res, next) => {
@@ -90,11 +101,11 @@ router.get('/', (req, res, next) => {
 })
 
 
-// Page to display all rooms
-router.get('/rooms', (req,res,next)=>{
-  Room.find({ isPublished: true })
-  .then(rooms => {
-    res.render('rooms', {rooms})
+// Page to display all tee-shirts
+router.get('/tee-shirts', (req,res,next)=>{
+  TeeShirt.find({ isPublished: true })
+  .then(teeShirts => {
+    res.render('tee-shirts', { teeShirts })
   })
 })
 
@@ -111,22 +122,22 @@ router.get('/add-room', (req,res,next)=>{
 
 // Page to handle the form submission and add a room
 router.post('/add-room', (req,res,next)=>{
-  Room.create({
+  TeeShirt.create({
     name: req.body.name,
     description: req.body.description,
     isPublished: req.body.isPublished,
   })
   .then(() => {
-    res.redirect('/rooms')
+    res.redirect('/tee-shirts')
   })
   .catch(next)
 })
 
-// Page to see the rooms of the connected person
-router.get('/my-rooms', (req,res,next)=>{
-  Room.find() // TODO: change the filter to only show the right rooms
-  .then(rooms => {
-    res.render('rooms', {rooms})
+// Page to see the tee-shirts of the connected person
+router.get('/my-tee-shirts', (req,res,next)=>{
+  TeeShirt.find() // TODO: change the filter to only show the right rooms
+  .then(teeShirts => {
+    res.render('teeShirts', {teeShirts})
   })
   .catch(next)
 })
@@ -151,4 +162,4 @@ Change the route `POST /add-room` to save the `_owner`. You will have to use `re
 
 ### Step 4
 
-Change the route `GET /my-rooms` to only show the rooms of the connected user. You will have to use `req.user`.
+Change the route `GET /my-tee-shirts` to only show the tee-shirts of the connected user. You will have to use `req.user`.

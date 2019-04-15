@@ -2,10 +2,12 @@
 
 ## Goal
 
-The goal of this project is to create a website where:
-- people can add tee-shirts
-- admin can validate tee-shirts
-- people can see all validated tee-shirts to buy
+The goal of this project is to create a t-shirt market place where:
+- people can add t-shirts
+- admin can validate t-shirts
+- people can see all validated t-shirts to buy
+
+If you want some inspiration, you can go on [Qwertee](https://www.qwertee.com).
 
 ## Steps to reproduce to start
 
@@ -15,13 +17,13 @@ cd express-security-and-roles
 code .
 ```
 
-Create `models/TeeShirt.js` 
+Create `models/Tshirt.js` 
 ```javascript
-// models/TeeShirt.js
+// models/Tshirt.js
 const mongoose = require('mongoose')
 const Schema   = mongoose.Schema
 
-const roomSchema = new Schema({
+const tshirtSchema = new Schema({
   name: String,
   pictureUrl: String,
   price: { 
@@ -38,8 +40,8 @@ const roomSchema = new Schema({
   }
 })
 
-const TeeShirt = mongoose.model('TeeShirt', roomSchema)
-module.exports = TeeShirt
+const Tshirt = mongoose.model('Tshirt', tshirtSchema)
+module.exports = Tshirt
 ```
 
 Change the navbar of `views/layout.hbs` 
@@ -48,44 +50,53 @@ Change the navbar of `views/layout.hbs`
 
 <!-- ... -->
 
-{{!-- TODO: Display "Login/Signup/My rooms" only if not connected --}}
+{{!-- TODO: Display "Login/Signup/My T-Shirts" only if not connected --}}
 {{!-- TODO: Display "Logout" only if connected --}}
 <nav>
   <a href="/">Home</a>
   <a href="/auth/login">Login</a>
   <a href="/auth/signup">Signup</a>
   <a href="/auth/logout">Logout</a>
-  <a href="/rooms">All rooms</a>
-  <a href="/add-room">Add room</a>
-  <a href="/my-rooms">My rooms</a>
+  <a href="/tshirts">All tshirts</a>
+  <a href="/add-tshirt">Add tshirt</a>
+  <a href="/my-tshirts">My tshirts</a>
 </nav>
 ```
 
-Create `views/rooms.hbs`
-```hbs
-<h1>All rooms</h1>
+Create `views/tshirts.hbs`
+```htmlmixed=
+<h1>All tshirts</h1>
 
-<ul>
-{{#each rooms}}
-  <li>{{this.name}}</li>
-{{/each}}
-</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Picture</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each tshirts}}
+    <tr>
+      <th>{{this.name}}</th>
+      <th>{{this.price}}€</th>
+      <th><img src="{{this.pictureUrl}}"></th>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
 ```
 
-Create `views/add-room.hbs`
+Create `views/add-tshirt.hbs`
 ```hbs
-<h1>Add room</h1>
+<h1>Add tshirt</h1>
 
-<form action="/add-room" method="post">
+<form action="/add-tshirt" method="post">
   Name: <input type="text" name="name"><br>
-  Description: <input type="text" name="description"><br>
-  Is Published: 
-  <select name="isPublished">
-    <option value="true">Yes</option>
-    <option value="false">No</option>
-  </select>
-  <br>
-  <button type="submit">Create the room</button>
+  Picture: <input type="text" name="pictureUrl"><br>
+  Price: <input type="number" name="price"><br>
+  <button type="submit">Create the tshirt</button>
 </form>
 ```
 
@@ -93,7 +104,7 @@ Update `routes/index.js`
 ```javascript
 const express = require('express')
 const router  = express.Router()
-const TeeShirt = require('../models/TeeShirt')
+const Tshirt = require('../models/Tshirt')
 
 // Home page
 router.get('/', (req, res, next) => {
@@ -101,11 +112,11 @@ router.get('/', (req, res, next) => {
 })
 
 
-// Page to display all tee-shirts
-router.get('/tee-shirts', (req,res,next)=>{
-  TeeShirt.find({ isPublished: true })
-  .then(teeShirts => {
-    res.render('tee-shirts', { teeShirts })
+// Page to display all tshirts
+router.get('/tshirts', (req,res,next)=>{
+  Tshirt.find({ isPublished: true })
+  .then(tshirts => {
+    res.render('tshirts', { tshirts })
   })
 })
 
@@ -114,30 +125,30 @@ router.get('/tee-shirts', (req,res,next)=>{
 // TODO: make the following routes available only if connected 
 
 
-// Page to display the form to add a room
-router.get('/add-room', (req,res,next)=>{
-  res.render('add-room')
+// Page to display the form to add a tshirt
+router.get('/add-tshirt', (req,res,next)=>{
+  res.render('add-tshirt')
 })
 
 
-// Page to handle the form submission and add a room
-router.post('/add-room', (req,res,next)=>{
-  TeeShirt.create({
+// Page to handle the form submission and add a tshirt
+router.post('/add-tshirt', (req,res,next)=>{
+  Tshirt.create({
     name: req.body.name,
-    description: req.body.description,
-    isPublished: req.body.isPublished,
+    pictureUrl: req.body.pictureUrl,
+    price: req.body.price,
   })
   .then(() => {
-    res.redirect('/tee-shirts')
+    res.redirect('/tshirts')
   })
   .catch(next)
 })
 
-// Page to see the tee-shirts of the connected person
-router.get('/my-tee-shirts', (req,res,next)=>{
-  TeeShirt.find() // TODO: change the filter to only show the right rooms
-  .then(teeShirts => {
-    res.render('teeShirts', {teeShirts})
+// Page to see the tshirts of the connected person
+router.get('/my-tshirts', (req,res,next)=>{
+  Tshirt.find() // TODO: change the filter to only show the right tshirts
+  .then(tshirts => {
+    res.render('tshirts', {tshirts})
   })
   .catch(next)
 })
@@ -158,8 +169,8 @@ Create middlewares `checkConnected` and `checkAdmin` (or `checkRole`) and protec
 
 ### Step 3
 
-Change the route `POST /add-room` to save the `_owner`. You will have to use `req.user`.
+Change the route `POST /add-tshirt` to save the `_owner`. You will have to use `req.user`.
 
 ### Step 4
 
-Change the route `GET /my-tee-shirts` to only show the tee-shirts of the connected user. You will have to use `req.user`.
+Change the route `GET /my-tshirts` to only show the tshirts of the connected user. You will have to use `req.user`.

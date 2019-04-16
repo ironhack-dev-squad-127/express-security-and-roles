@@ -58,14 +58,14 @@ Change the navbar of `views/layout.hbs`
   <a href="/auth/signup">Signup</a>
   <a href="/auth/logout">Logout</a>
   <a href="/tshirts">All tshirts</a>
-  <a href="/add-tshirt">Add tshirt</a>
-  <a href="/my-tshirts">My tshirts</a>
+  <a href="/add-tshirt">Add t-shirt</a>
+  <a href="/my-tshirts">My t-shirts</a>
 </nav>
 ```
 
 Create `views/tshirts.hbs`
-```htmlmixed=
-<h1>All tshirts</h1>
+```html
+<h1>All t-shirts</h1>
 
 
 <table>
@@ -114,7 +114,7 @@ router.get('/', (req, res, next) => {
 
 // Page to display all tshirts
 router.get('/tshirts', (req,res,next)=>{
-  Tshirt.find({ isPublished: true })
+  Tshirt.find({ isValidated: true })
   .then(tshirts => {
     res.render('tshirts', { tshirts })
   })

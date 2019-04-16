@@ -1,7 +1,7 @@
 const express = require('express')
 const router  = express.Router()
 const Tshirt = require('../models/Tshirt')
-const { checkConnected } = require('../middlewares')
+const { checkConnected, checkAdmin, checkRole } = require('../middlewares')
 
 // Home page
 router.get('/', (req, res, next) => {
@@ -44,6 +44,24 @@ router.get('/my-tshirts', checkConnected, (req,res,next)=>{
   Tshirt.find({ _owner: req.user._id })
   .then(tshirts => {
     res.render('my-tshirts', {tshirts})
+  })
+  .catch(next)
+})
+
+// Route to display the tshirts to validate
+// Because of `checkAdmin`, only admins can go to this route
+router.get('/tshirt-validation', checkAdmin, (req,res,next) => {
+  Tshirt.find({ isValidated: false })
+  .then(tshirts => {
+    res.render('tshirt-validation', {tshirts})
+  })
+  .catch(err => next(err))
+})
+
+router.get('/tshirt-validation/:tshirtId', checkRole('ADMIN'), (req,res,next) => {
+  Tshirt.findByIdAndUpdate(req.params.tshirtId, { isValidated: true })
+  .then(() => {
+    res.redirect('/tshirt-validation')
   })
   .catch(next)
 })

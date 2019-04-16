@@ -7,6 +7,18 @@ module.exports = {
     if (req.user) next()
     else res.redirect('/auth/login')
   },
+
+  // Go to the next middleware only is connected
   checkAdmin: (req,res,next) => {
+    if (req.user && req.user.role === 'ADMIN') next()
+    else res.redirect('/auth/login')
   },
+
+  // Function that returns a middleware
+  checkRole: (role) => {
+    return (req,res,next) => {
+      if (req.user && req.user.role === role) next()
+      else res.redirect('/auth/login')
+    }
+  }
 }

@@ -73,6 +73,20 @@ app.use(session({
 }))
 app.use(flash());
 require('./passport')(app);
+
+
+// This middleware is executed everytime, before the routes
+app.use((req,res,next) => {
+  // Define a view variable named `isConnected`
+  res.locals.isConnected = !!req.user
+
+  // Define a view variable named `connectedUser`
+  res.locals.connectedUser = req.user
+
+  // Define a view variable named `isAdmin`
+  res.locals.isAdmin = req.user && req.user.role === 'ADMIN'
+  next()
+})
     
 
 const index = require('./routes/index');

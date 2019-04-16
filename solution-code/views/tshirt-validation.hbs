@@ -1,0 +1,22 @@
+<h1>Tshirts to validate</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Picture</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each tshirts}}
+    <tr>
+      <td>{{this.name}}</td>
+      <td>{{this.price}}€</td>
+      <td><img src="{{this.pictureUrl}}"></td>
+      <td><a href="/tshirt-validation/{{this._id}}">Validate</a></td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

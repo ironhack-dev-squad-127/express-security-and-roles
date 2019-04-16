@@ -161,7 +161,7 @@ module.exports = router
 ## Role
 
 ### Step 1
-Create a field `role` in `models/User.js`. The possible values are: `"SIMPLE_USER"` and `"ADMIN"`.
+Create a field `role` in `models/User.js`. The possible values are: `"SIMPLE_USER"` and `"ADMIN"`. The default value is `"SIMPLE_USER"`.
 
 ### Step 2
 Create middlewares `checkConnected` and `checkAdmin` (or `checkRole`) and protect the routes with this middleware.

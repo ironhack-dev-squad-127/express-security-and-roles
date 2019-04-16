@@ -1,0 +1,20 @@
+<h1>All tshirts</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Picture</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each tshirts}}
+    <tr>
+      <td>{{this.name}}</td>
+      <td>{{this.price}}€</td>
+      <td><img src="{{this.pictureUrl}}"></td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

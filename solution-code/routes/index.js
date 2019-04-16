@@ -31,6 +31,7 @@ router.post('/add-tshirt', checkConnected, (req,res,next)=>{
     name: req.body.name,
     pictureUrl: req.body.pictureUrl,
     price: req.body.price,
+    _owner: req.user._id // <== Save the id of the connected user
   })
   .then(() => {
     res.redirect('/tshirts')

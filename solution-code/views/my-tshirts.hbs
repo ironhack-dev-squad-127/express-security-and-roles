@@ -1,0 +1,26 @@
+<h1>My t-shirts</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Picture</th>
+      <th>Is Validated?</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each tshirts}}
+      {{#if this.isValidated}}
+        <tr style="background-color: lightgreen">
+      {{else}}
+        <tr style="background-color: pink">
+      {{/if}}
+        <td>{{this.name}}</td>
+        <td>{{this.price}}€</td>
+        <td><img src="{{this.pictureUrl}}"></td>
+        <td>{{this.isValidated}}</td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>

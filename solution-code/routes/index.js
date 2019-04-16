@@ -41,9 +41,9 @@ router.post('/add-tshirt', checkConnected, (req,res,next)=>{
 
 // Page to see the tshirts of the connected person
 router.get('/my-tshirts', checkConnected, (req,res,next)=>{
-  Tshirt.find() // TODO: change the filter to only show the right tshirts
+  Tshirt.find({ _owner: req.user._id })
   .then(tshirts => {
-    res.render('tshirts', {tshirts})
+    res.render('my-tshirts', {tshirts})
   })
   .catch(next)
 })
